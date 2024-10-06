@@ -16,7 +16,7 @@ public class FrmData extends javax.swing.JFrame {
     Connection cn = koneksi.KoneksiDatabase.Koneksi();
 
     public FrmData() {
-        setTitle("klinik Ratna");
+        setTitle("Klinik Fadilla");
         initComponents();
         
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
