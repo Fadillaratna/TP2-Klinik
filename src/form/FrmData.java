@@ -18,15 +18,15 @@ public class FrmData extends javax.swing.JFrame {
     public FrmData() {
         setTitle("Klinik Fadilla");
         initComponents();
-        
+
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                exit(); 
+                exit();
             }
         });
-        
+
         showData();
     }
 
@@ -37,11 +37,11 @@ public class FrmData extends javax.swing.JFrame {
         txtAlamat.setText("");
         txtNoTelp.setText("");
         inputTglLahir.setDate(null);
-        
+
         btnSimpan.setText("Simpan");
         txtNIK.setEditable(true);
     }
-    
+
     private void showData() {
         try {
             st = cn.createStatement();
@@ -77,12 +77,12 @@ public class FrmData extends javax.swing.JFrame {
 
         }
     }
-    
+
     private void exit() {
         int response = JOptionPane.showConfirmDialog(this, "Apakah Anda yakin ingin keluar?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             System.exit(0);
-        }else{
+        } else {
             return;
         }
     }
@@ -90,10 +90,10 @@ public class FrmData extends javax.swing.JFrame {
     private void search() {
         try {
             String key = cmbCari.getSelectedItem().toString();
-            if(key.equalsIgnoreCase("Nomor telepon")){
+            if (key.equalsIgnoreCase("Nomor telepon")) {
                 key = "NO_TLP";
             }
-            
+
             st = cn.createStatement();
             rs = st.executeQuery("SELECT * FROM PASIEN WHERE " + key + " LIKE '%" + txtCari.getText().toString() + "%'");
 
@@ -109,6 +109,7 @@ public class FrmData extends javax.swing.JFrame {
             tblModel.fireTableDataChanged();
             tblModel.setRowCount(0);
 
+            boolean dataFound = false;
             int no = 1;
             while (rs.next()) {
                 Object[] data = new Object[]{
@@ -121,6 +122,12 @@ public class FrmData extends javax.swing.JFrame {
                 tblModel.addRow(data);
                 tblPasien.setModel(tblModel);
                 no++;
+                dataFound = true;
+            }
+            
+            if (!dataFound) {
+                tblModel.setRowCount(0);
+                tblPasien.setModel(tblModel);
             }
 
         } catch (Exception ex) {
@@ -374,11 +381,11 @@ public class FrmData extends javax.swing.JFrame {
             } else {
                 String tglLahir = new SimpleDateFormat("yyyy-MM-dd").format(inputTglLahir.getDate());
                 String sqlUpdate = "UPDATE PASIEN SET "
-                    + "NAMA = '" + txtNama.getText() + "', "
-                    + "ALAMAT = '" + txtAlamat.getText() + "', "
-                    + "TANGGAL_LAHIR = '" + tglLahir + "', "
-                    + "NO_TLP = '" + txtNoTelp.getText() + "' "
-                    + "WHERE NIK = '" + txtNIK.getText() + "'";
+                        + "NAMA = '" + txtNama.getText() + "', "
+                        + "ALAMAT = '" + txtAlamat.getText() + "', "
+                        + "TANGGAL_LAHIR = '" + tglLahir + "', "
+                        + "NO_TLP = '" + txtNoTelp.getText() + "' "
+                        + "WHERE NIK = '" + txtNIK.getText() + "'";
                 st.executeUpdate(sqlUpdate);
                 JOptionPane.showMessageDialog(this, "Data pasien berhasil diubah!");
                 reset();
@@ -390,19 +397,19 @@ public class FrmData extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSimpanActionPerformed
 
     private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
-        if(txtNIK.getText().equals("")){
+        if (txtNIK.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Silahkan pilih data yang akan dihapus terlebih dahulu!");
-        }else{
+        } else {
             int konfirmasi = JOptionPane.showConfirmDialog(this, "Apakah anda yakin menghapus data ini ?", "Konfirmasi", JOptionPane.YES_NO_OPTION);
-            if(konfirmasi == JOptionPane.YES_OPTION){
-                try{
+            if (konfirmasi == JOptionPane.YES_OPTION) {
+                try {
                     st = cn.createStatement();
                     String sql = "DELETE FROM PASIEN WHERE NIK = '" + txtNIK.getText() + "'";
                     st.executeUpdate(sql);
                     JOptionPane.showMessageDialog(this, "Data pasien berhasil dihapus!");
                     showData();
                     reset();
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, ex);
                 }
             }
@@ -419,13 +426,13 @@ public class FrmData extends javax.swing.JFrame {
         txtAlamat.setText(tblPasien.getValueAt(tblPasien.getSelectedRow(), 3).toString());
         txtNoTelp.setText(tblPasien.getValueAt(tblPasien.getSelectedRow(), 5).toString());
         String dateString = (String) tblPasien.getValueAt(tblPasien.getSelectedRow(), 4);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MMM-dd"); 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MMM-dd");
         try {
-            java.util.Date utilDate = format.parse(dateString); 
-            Date sqlDate = new Date(utilDate.getTime()); 
+            java.util.Date utilDate = format.parse(dateString);
+            Date sqlDate = new Date(utilDate.getTime());
             inputTglLahir.setDate(sqlDate);
         } catch (ParseException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
 
         txtNIK.setEditable(false);
